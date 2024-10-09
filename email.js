@@ -203,7 +203,6 @@ async function processRow(sheets, rowIndex, row, websiteSummaryPrompt, leadQuali
   const leadType = row[14] || 'N/A'; // Column R (Index 14)
 
   const fullUrl = ensureHttps(companyWebsite);
-  console.log(emailSubject, emailContent);
 
   if (companyWebsite !== "N/A" && emailContent === "N/A") {
       try {
@@ -294,7 +293,6 @@ async function fetchSheetData(authClient) {
       const craftEmailPrompt = row[2] || 'N/A'; // Column H (Index 7)
       const craftSubjectPrompt = row[3] || 'N/A'; // Column I (Index 8)
 
-      console.log(websiteSummaryPrompt,leadQualityPrompt, craftEmailPrompt);
 
       // Get data from row 2 onward
       const dataRange = `${SHEET_NAME}!A2:I`; // Adjust range as needed
@@ -305,7 +303,6 @@ async function fetchSheetData(authClient) {
 
       const rows = res.data.values || [];
       let chunkSize = 20; // Initial chunk size
-      console.log(rows);
 
       for (let i = 0; i < rows.length; i += chunkSize) {
           const chunk = rows.slice(i, i + chunkSize);
