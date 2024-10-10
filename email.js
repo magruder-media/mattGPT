@@ -21,8 +21,8 @@ const SCOPES = [
 // time.
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
 const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json');
-const SHEET_ID = '1Qow5FXrEEcsv8DJwySODvLwcJ434h9gXyJu7Jyg6Tu0';
-const SHEET_NAME = 'Responses'; // Modify if your sheet name is different
+const SHEET_ID = '1RgiOJmR7S7ypyRy0sqhGjiqkNKNEFSwI-qpcfpxCcyQ';
+const SHEET_NAME = 'Contacts'; // Modify if your sheet name is different
 
 /**
  * Reads previously authorized credentials from the save file.
@@ -195,11 +195,10 @@ function truncateTo80Chars(text) {
 async function processRow(sheets, rowIndex, row, websiteSummaryPrompt, leadQualityPrompt, craftEmailPrompt, craftSubjectPrompt) {
   const firstName = row[0] || 'N/A'; // Column D (Index 0)
   const lastName = row[1] || 'N/A';  // Column E (Index 1)
-  const companyName = row[2] || 'N/A'; // Column H (Index 4)
-  const companyWebsite = row[3] || 'N/A'; // Column L (Index 8)
-  const linkedinInfo = row[4] || 'N/A'; // Column M (Index 9)
-  const emailSubject = row [6] || 'N/A'
-  const emailContent = row[7] || 'N/A'; // Column P (Index 12)
+  const companyName = row[4] || 'N/A'; // Column H (Index 4)
+  const companyWebsite = row[8] || 'N/A'; // Column L (Index 8)
+  const linkedinInfo = row[9] || 'N/A'; // Column M (Index 9)
+  const emailContent = row[12] || 'N/A'; // Column P (Index 12)
   const leadType = row[14] || 'N/A'; // Column R (Index 14)
 
   const fullUrl = ensureHttps(companyWebsite);
@@ -225,9 +224,9 @@ async function processRow(sheets, rowIndex, row, websiteSummaryPrompt, leadQuali
           const subjectResponse = await getChatGPTResponse(craftSubjectPrompt.replace('{{email}}', emailResponse), API_KEY);
 
           // Update Google Sheet with the lead quality response in column R and email response in column P
-          const leadQualityRange = `${SHEET_NAME}!I${rowIndex + 2}`;
-          const emailRange = `${SHEET_NAME}!H${rowIndex + 2}`;
-          const subjectRange = `${SHEET_NAME}!G${rowIndex + 2}`;
+          const leadQualityRange = `${SHEET_NAME}!R${rowIndex + 2}`;
+          const emailRange = `${SHEET_NAME}!P${rowIndex + 2}`;
+          const subjectRange = `${SHEET_NAME}!O${rowIndex + 2}`;
 
           await updateGoogleSheet(sheets, SHEET_ID, leadQualityRange, leadQualityResponse);
           await updateGoogleSheet(sheets, SHEET_ID, emailRange, emailResponse);
@@ -257,7 +256,7 @@ async function processRow(sheets, rowIndex, row, websiteSummaryPrompt, leadQuali
           await delay(50);
           const leadQualityResponse = await getChatGPTResponse(leadQualityPrompt.replace('{{summary}}', websiteSummaryResponse), API_KEY);
           // Update Google Sheet with the lead quality response in column R and email response in column P
-          const leadQualityRange = `${SHEET_NAME}!I${rowIndex + 2}`;
+          const leadQualityRange = `${SHEET_NAME}!R${rowIndex + 2}`;
 
           await updateGoogleSheet(sheets, SHEET_ID, leadQualityRange, leadQualityResponse);
 
@@ -279,23 +278,22 @@ async function fetchSheetData(authClient) {
   const sheets = google.sheets({ version: 'v4', auth: authClient });
 
   try {
-      const range = `Prompts!2:2`; // Row 4
+      const range = `Website-LinkedIn!4:4`; // Row 4
       const promptRes = await sheets.spreadsheets.values.get({
-          spreadsheetId: "1Qow5FXrEEcsv8DJwySODvLwcJ434h9gXyJu7Jyg6Tu0",
+          spreadsheetId: "1_asTWXFKZnfneGiozR3bbxtkChuB56NJq76J_n8_Ghs",
           range: range,
       });
 
       const row = promptRes.data.values ? promptRes.data.values[0] : [];
 
       // Extract specific columns
-      const websiteSummaryPrompt = row[0] || 'N/A'; // Column F (Index 5)
-      const leadQualityPrompt = row[1] || 'N/A'; // Column G (Index 6)
-      const craftEmailPrompt = row[2] || 'N/A'; // Column H (Index 7)
-      const craftSubjectPrompt = row[3] || 'N/A'; // Column I (Index 8)
-
+      const websiteSummaryPrompt = row[5] || 'N/A'; // Column F (Index 5)
+      const leadQualityPrompt = row[6] || 'N/A'; // Column G (Index 6)
+      const craftEmailPrompt = row[7] || 'N/A'; // Column H (Index 7)
+      const craftSubjectPrompt = row[8] || 'N/A'; // Column I (Index 8)
 
       // Get data from row 2 onward
-      const dataRange = `${SHEET_NAME}!A2:I`; // Adjust range as needed
+      const dataRange = `${SHEET_NAME}!D2:R`; // Adjust range as needed
       const res = await sheets.spreadsheets.values.get({
           spreadsheetId: SHEET_ID,
           range: dataRange,
