@@ -40,6 +40,7 @@ app.get('/commence', (req, res) => {
     currentProcess.on('error', (error) => {
         console.error(`Error executing command: ${error.message}`);
         res.status(500).send('An error occurred while starting the process.');
+        currentProcess = null; // Reset the current process reference
     });
 
     currentProcess.on('close', (code) => {
@@ -49,8 +50,7 @@ app.get('/commence', (req, res) => {
         currentProcess = null; // Reset the current process reference
 
         // Clean up listeners (if necessary)
-        currentProcess.stdout.removeAllListeners();
-        currentProcess.stderr.removeAllListeners();
+        // We don't need to do this as `currentProcess` is already null
     });
 });
 
