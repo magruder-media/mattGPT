@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const { spawn } = require('child_process');
+const port = process.env.PORT || 4000;
 
 const app = express();
 
@@ -55,7 +56,7 @@ app.get('/commence', (req, res) => {
 });
 
 // Start the HTTP server
-const PORT = 3030; // Change to your desired port
+// Change to your desired port
 http.createServer(app).listen(PORT, () => {
     console.log(`Server is running at http://192.168.1.234:${PORT}`);
 });
