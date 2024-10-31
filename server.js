@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const { spawn } = require('child_process');
-const port = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4000;
 
 const app = express();
 
